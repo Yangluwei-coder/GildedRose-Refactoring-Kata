@@ -37,3 +37,10 @@ python tests/test_gilded_rose_approvals.py
 ```
 
 You will need to approve the output file which appears under "approved_files" by renaming it from xxx.received.txt to xxx.approved.txt.
+
+## Refactoring Notes
+
+Refactored using the **Strategy Pattern**: each item type has its own Processor class 
+(`GeneralItemProcessor`, `AgedBrieProcessor`, `SulfurasProcessor`, `BackstagePassProcessor`).
+
+This makes the code more modular and easier to extend with new item types in the future.
