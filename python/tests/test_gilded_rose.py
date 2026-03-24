@@ -9,7 +9,6 @@ class GildedRoseTest(unittest.TestCase):
         items = [Item("Aged Brie", 10, 10)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
-        # 在重构前，运行这个测试
         self.assertEqual(11, items[0].quality)
 
         
