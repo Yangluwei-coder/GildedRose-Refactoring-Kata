@@ -15,9 +15,12 @@ class GeneralItemProcessor:
 
     def update(self):
         self.item.sell_in -= 1
-        self.decrease_quality()
+        self.adjust_quality()
         if self.item.sell_in < 0:
-            self.decrease_quality()
+            self.adjust_quality()
+
+    def adjust_quality(self):
+        self.decrease_quality()
 
     def decrease_quality(self):
         if self.item.quality > 0:
@@ -28,11 +31,8 @@ class GeneralItemProcessor:
             self.item.quality += 1
 
 class AgedBrieProcessor(GeneralItemProcessor):
-    def update(self):
-        self.item.sell_in -= 1
+    def adjust_quality(self):
         self.increase_quality()
-        if self.item.sell_in < 0:
-            self.increase_quality()
 
 class SulfurasProcessor(GeneralItemProcessor):
     def update(self):
