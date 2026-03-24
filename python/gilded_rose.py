@@ -9,39 +9,59 @@ class Item:
     def __repr__(self):
         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
 
+class GeneralItemProcessor:
+    def __init__(self, item):
+        self.item = item
+
+    def update(self):
+        self.item.sell_in -= 1
+        self.decrease_quality()
+        if self.item.sell_in < 0:
+            self.decrease_quality()
+
+    def decrease_quality(self):
+        if self.item.quality > 0:
+            self.item.quality -= 1
+
+    def increase_quality(self):
+        if self.item.quality < 50:
+            self.item.quality += 1
+
+class AgedBrieProcessor(GeneralItemProcessor):
+    def update(self):
+        self.item.sell_in -= 1
+        self.increase_quality()
+        if self.item.sell_in < 0:
+            self.increase_quality()
+
+class SulfurasProcessor(GeneralItemProcessor):
+    def update(self):
+        pass
+
+class BackstagePassProcessor(GeneralItemProcessor):
+    def update(self):
+        self.item.sell_in -= 1
+        self.increase_quality()
+        if self.item.sell_in < 10:
+            self.increase_quality()
+        if self.item.sell_in < 5:
+            self.increase_quality()
+        if self.item.sell_in < 0:
+            self.item.quality = 0
+
 
 class GildedRose(object):
-
     def __init__(self, items):
         self.items = items
+       
+        self.processor_map = {
+            "Aged Brie": AgedBrieProcessor,
+            "Sulfuras, Hand of Ragnaros": SulfurasProcessor,
+            "Backstage passes to a TAFKAL80ETC concert": BackstagePassProcessor
+        }
 
     def update_quality(self):
         for item in self.items:
-            if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
-                if item.quality > 0:
-                    if item.name != "Sulfuras, Hand of Ragnaros":
-                        item.quality = item.quality - 1
-            else:
-                if item.quality < 50:
-                    item.quality = item.quality + 1
-                    if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                        if item.sell_in < 11:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-                        if item.sell_in < 6:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-            if item.name != "Sulfuras, Hand of Ragnaros":
-                item.sell_in = item.sell_in - 1
-            if item.sell_in < 0:
-                if item.name != "Aged Brie":
-                    if item.name != "Backstage passes to a TAFKAL80ETC concert":
-                        if item.quality > 0:
-                            if item.name != "Sulfuras, Hand of Ragnaros":
-                                item.quality = item.quality - 1
-                    else:
-                        item.quality = item.quality - item.quality
-                else:
-                    if item.quality < 50:
-                        item.quality = item.quality + 1
-
+            processor_cls = self.processor_map.get(item.name, GeneralItemProcessor)
+            processor = processor_cls(item)
+            processor.update()
