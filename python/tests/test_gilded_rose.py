@@ -6,10 +6,11 @@ from gilded_rose import Item, GildedRose
 
 class GildedRoseTest(unittest.TestCase):
     def test_foo(self):
-        items = [Item("foo", 0, 0)]
+        items = [Item("Aged Brie", 10, 10)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
-        self.assertEqual("fixme", items[0].name)
+        # 在重构前，运行这个测试
+        self.assertEqual(11, items[0].quality)
 
         
 if __name__ == '__main__':
